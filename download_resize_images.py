@@ -11,7 +11,7 @@ error_log_path = 'error.log'
 if not os.path.exists(error_log_path):
     open(error_log_path, 'w').close()
 
-def resize_and_crop_image(original_image, target_width=750, target_height=500):
+def resize_and_crop_image(original_image, target_width=560, target_height=399):
     """Resize and crop the image to the target size."""
     original_width, original_height = original_image.size
 
@@ -67,12 +67,15 @@ def log_error(message):
 def process_csv(csv_filename):
     """Process a CSV file to download and process images."""
     with open(csv_filename, 'r', encoding='utf-8') as csvfile:
-        csvreader = csv.reader(csvfile)
-        next(csvreader)  # Skip the header
+        # Specify the correct delimiter if your CSV uses semicolons
+        csvreader = csv.reader(csvfile, delimiter=';')
+        next(csvreader)  # Skip the header row if your CSV includes headers
+
         for idx, row in enumerate(csvreader, start=1):
-            image_url = row[-1]
+            # Strip whitespace and fetch the URL, assuming it's in the last column
+            image_url = row[-1].strip()
             filename = f"car_{idx}.jpg"
-            print(f"\nProcessing image {idx}")
+            print(f"\nProcessing image {idx}: {image_url}")  # Added URL in print for clarity
             download_and_process_image(image_url, filename)
 
 if __name__ == "__main__":
